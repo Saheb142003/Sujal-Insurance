@@ -1,0 +1,610 @@
+/* index.optimized.css — Fully consolidated and optimized
+
+   Goals for this update
+   - Remove duplicates and conflicting rules
+   - Group tokens and component rules clearly (Base / Layout / Components / Utilities)
+   - Keep responsive behavior: stats carousel on mobile, insurance cards as carousel on mobile
+   - Use clamp() and CSS variables for responsive sizing
+   - Minimize repeated @media blocks by combining rules where possible
+
+   Notes
+   - This file is intended to replace your existing index.css/index.optimized.css content.
+   - If your app relies on older custom tokens, at the end there are compatibility fallbacks.
+*/
+
+:root {
+  /* Theme colors */
+  --color-primary: #1e40af;
+  --color-primary-600: #1e3a8a;
+  --color-primary-400: #3b82f6;
+  --color-accent: #f59e0b;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+
+  /* Shadows */
+  --shadow-1: rgba(15, 23, 42, 0.06);
+  --shadow-2: rgba(15, 23, 42, 0.1);
+
+  /* Layout / spacing */
+  --gap: 0.9rem;
+  --gap-sm: 0.6rem;
+  --container-lg: 1200px;
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  /* Timing */
+  --dur-fast: 0.18s;
+  --dur-med: 0.28s;
+  --dur-long: 0.45s;
+
+  /* Type */
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue",
+    Arial;
+}
+
+/* -------------------- Base / Reset -------------------- */
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+button {
+  font-family: inherit;
+  border: 0;
+  background: none;
+}
+.container {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 28px var(--shadow-1);
+  border: 1px solid var(--color-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* -------------------- Header -------------------- */
+.app-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) ee,
+    var(--color-primary-600) dd
+  );
+  color: #fff;
+  padding: 1.25rem 1rem;
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.app-header .wrap {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+.app-header h1 {
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5vw, 2.8rem);
+  text-align: center;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #fff, #e2e8f0);
+  /* -webkit-background-clip: text; */
+  -webkit-text-fill-color: transparent;
+}
+.app-header h1 .chev {
+  font-size: 14px;
+  display: inline-block;
+  transform-origin: center;
+  transition: transform var(--dur-fast);
+}
+.header-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  align-items: start;
+  transition: all var(--dur-med) ease;
+}
+.header-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.header-card .muted {
+  color: var(--color-text-secondary);
+  opacity: 0.95;
+}
+
+/* collapsible header on small screens */
+@media (max-width: 640px) {
+  .header-details {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    overflow: hidden;
+    padding-top: 0;
+  }
+  .header-details.open {
+    max-height: 420px;
+    opacity: 1;
+    transform: none;
+    padding-top: 0.5rem;
+  }
+  .app-header .wrap {
+    gap: 0.6rem;
+  }
+}
+
+/* -------------------- Stats -------------------- */
+.stats-section {
+  margin: 1.9rem 0;
+  max-width: var(--container-lg);
+  margin-left: auto;
+  margin-right: auto;
+}
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.stats-item {
+  background: var(--color-surface);
+  padding: 1.25rem;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 6px 18px var(--shadow-1);
+  text-align: center;
+  min-width: 160px;
+}
+.stats-item .icon {
+  font-size: 2.1rem;
+  margin-bottom: 0.5rem;
+}
+.stats-item .value {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+.stats-item .label {
+  font-size: 0.92rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* mobile: horizontal snap carousel for stats */
+@media (max-width: 720px) {
+  .stats-row {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.4rem 0.6rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .stats-row .stats-item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+  .stats-row::-webkit-scrollbar {
+    height: 8px;
+  }
+  .stats-row::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+  }
+}
+
+/* -------------------- Insurance grid / cards -------------------- */
+/* Base desktop grid - responsive columns handled by media queries below */
+.insurance-grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: stretch;
+  padding: 0.5rem 0;
+}
+.insurance-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+  padding: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(16, 24, 40, 0.04);
+  background: linear-gradient(
+    180deg,
+    rgba(29, 78, 216, 0.02),
+    var(--color-surface)
+  );
+  transition: transform var(--dur-fast), box-shadow var(--dur-fast);
+}
+.insurance-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px var(--shadow-2);
+}
+.insurance-cover {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.insurance-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.12), transparent);
+}
+.insurance-body {
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+.insurance-title {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 1rem;
+}
+.insurance-desc {
+  font-size: 0.92rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+.feature-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  margin-top: 0.25rem;
+}
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  background: rgba(16, 185, 129, 0.06);
+  padding: 6px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 185, 129, 0.08);
+}
+.card-action {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: auto;
+}
+.tile-cta {
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.08);
+  border: none;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary),
+    var(--color-primary-400)
+  );
+  color: #fff;
+}
+.tile-meta {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+.popular-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 8px;
+  background: linear-gradient(90deg, var(--color-accent), #d97706);
+  color: #fff;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(217, 120, 6, 0.14);
+}
+
+/* ---------- Responsive behavior & carousel on small screens ---------- */
+/* Use a single media block to control most mobile behavior */
+@media (max-width: 720px) {
+  /* Make insurance list behave as a horizontal carousel */
+  .insurance-grid {
+    display: flex !important;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding: 0.5rem 0.6rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .insurance-grid .insurance-card {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-width: clamp(160px, 36vw, 240px);
+    max-width: clamp(160px, 46vw, 320px);
+    margin: 0;
+  }
+
+  /* Compact appearance: show only cover (body hidden) */
+  .insurance-card .insurance-body {
+    display: none !important;
+  }
+
+  /* Responsive cover sizing and title overlay */
+  .insurance-cover {
+    height: clamp(92px, 18vw, 160px);
+    align-items: flex-end;
+  }
+  .cover-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.36) 65%
+    );
+    pointer-events: none;
+  }
+  .cover-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: clamp(0.86rem, 2.2vw, 1.02rem);
+    text-align: center;
+    padding: 0 6px;
+    line-height: 1.15;
+  }
+
+  /* smaller badge and CTA sizing on phones */
+  .popular-badge {
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+  .tile-cta {
+    padding: 0.42rem 0.6rem;
+    font-size: 0.86rem;
+    border-radius: 8px;
+  }
+
+  /* scrollbar aesthetics */
+  .insurance-grid::-webkit-scrollbar {
+    height: 9px;
+  }
+  .insurance-grid::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+  }
+}
+
+/* Breakpoint tweaks for very narrow and medium phones */
+@media (max-width: 380px) {
+  .insurance-grid {
+    gap: 0.5rem;
+  }
+  .insurance-grid .insurance-card {
+    min-width: clamp(140px, 44vw, 200px);
+  }
+  .insurance-cover {
+    height: 92px;
+  }
+}
+@media (min-width: 381px) and (max-width: 720px) {
+  /* favor 3-up when space allows */
+  .insurance-grid .insurance-card {
+    min-width: clamp(150px, 32vw, 220px);
+  }
+  .insurance-cover {
+    height: 110px;
+  }
+}
+
+@media (min-width: 721px) {
+  /* Restore grid layout for larger screens */
+  .insurance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--gap);
+    padding: 0.5rem 0;
+  }
+  .insurance-cover {
+    height: 200px;
+  }
+  .cover-title {
+    display: none;
+  }
+  .insurance-card .insurance-body {
+    display: block;
+  }
+}
+
+/* -------------------- Form -------------------- */
+.form-wrapper {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(29, 78, 216, 0.03),
+    var(--color-surface)
+  );
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px var(--shadow-1);
+  border-radius: 14px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+.form-grid .full {
+  grid-column: 1/-1;
+}
+.input,
+textarea.form-control,
+select.form-control {
+  width: 100%;
+  padding: 0.78rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(98, 108, 113, 0.08);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.98rem;
+}
+textarea.form-control {
+  min-height: 96px;
+  resize: vertical;
+}
+.input:focus,
+textarea.form-control:focus,
+select.form-control:focus {
+  outline: none;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.08);
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.45);
+}
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--color-text);
+}
+.btn-submit {
+  width: 100%;
+  padding: 0.95rem;
+  border-radius: 12px;
+  border: none;
+  font-weight: 800;
+  font-size: 1rem;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary),
+    var(--color-primary-400)
+  );
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.12);
+}
+.btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.btn-back {
+  background: transparent;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  color: var(--color-primary);
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+}
+@media (max-width: 520px) {
+  .form-wrapper {
+    padding: 0.75rem;
+    border-radius: 12px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+  .form-label {
+    font-size: 0.9rem;
+  }
+  .input,
+  textarea.form-control,
+  select.form-control {
+    padding: 0.72rem 0.8rem;
+    font-size: 0.97rem;
+  }
+}
+
+/* -------------------- Utilities -------------------- */
+.kicker {
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: block;
+}
+.muted {
+  color: var(--color-text-secondary);
+}
+.flex {
+  display: flex;
+}
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mt-1 {
+  margin-top: 0.6rem;
+}
+.mb-1 {
+  margin-bottom: 0.6rem;
+}
+.success-tick {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px var(--shadow-1);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  z-index: 60;
+}
+
+/* Compatibility fallbacks for older tokens */
+:root {
+  --color-primary-rgb: 30, 64, 175;
+  --color-teal-500-rgb: 33, 128, 141;
+}
+
+/* End of file */
