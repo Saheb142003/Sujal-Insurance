@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -37,7 +36,6 @@ export default function SuccessTick({ theme }) {
         border: `2px solid ${theme.success}`,
       }}
     >
-      {/* Success Icon */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -51,7 +49,6 @@ export default function SuccessTick({ theme }) {
         ✅
       </motion.div>
 
-      {/* Success Message */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -66,7 +63,6 @@ export default function SuccessTick({ theme }) {
         Message Sent Successfully!
       </motion.div>
 
-      {/* Sub Message */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.9 }}
@@ -81,7 +77,6 @@ export default function SuccessTick({ theme }) {
         Redirecting to WhatsApp...
       </motion.div>
 
-      {/* Animated background circles */}
       <motion.div
         animate={{
           scale: [1, 2, 3],

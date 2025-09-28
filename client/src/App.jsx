@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* App.jsx */
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import InsuranceList from "./components/InsuranceList.jsx";
@@ -44,7 +42,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [scrollY, setScrollY] = useState(0);
 
-  // mobile header open state (only used on small screens; CSS controls visibility)
   const [headerOpen, setHeaderOpen] = useState(false);
 
   useEffect(() => {
@@ -73,7 +70,6 @@ export default function App() {
     >
       <FloatingElements />
 
-      {/* Header with glassmorphism effect */}
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -115,7 +111,6 @@ export default function App() {
             aria-controls="agent-profile"
           >
             Sujal Insurance
-            {/* small chevron -- rotates when open */}
             <motion.span
               animate={{ rotate: headerOpen ? 180 : 0 }}
               transition={{ duration: 0.25 }}
@@ -131,7 +126,6 @@ export default function App() {
             </motion.span>
           </motion.h1>
 
-          {/* Header details: visible on large screens; on phones hidden by default and shown when headerOpen */}
           <div
             id="agent-profile"
             className={`header-details ${headerOpen ? "open" : ""}`}

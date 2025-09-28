@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 
-/* Product data */
 const INSURANCE_PRODUCTS = [
   {
     name: "Private Car Insurance",
@@ -42,7 +40,7 @@ const INSURANCE_PRODUCTS = [
   },
 ];
 
-/* Motion variants */
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -79,7 +77,7 @@ export default function InsuranceList({ onSelect = () => {}, theme = {} }) {
 
   return (
     <div style={{ position: "relative" }}>
-      {/* Carousel/Grid container */}
+    
       <motion.div
         ref={carouselRef}
         className="insurance-grid container carousel"

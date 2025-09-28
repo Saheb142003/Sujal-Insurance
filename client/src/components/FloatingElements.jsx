@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -110,7 +109,6 @@ export default function FloatingElements() {
         />
       ))}
 
-      {/* Additional decorative shapes */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{

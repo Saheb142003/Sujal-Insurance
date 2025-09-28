@@ -1,16 +1,11 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SuccessTick from "./SuccessTick";
 
 const WHATSAPP_NUMBER = "919113111384";
 
-/**
- * Return field configs depending on product tag.
- * Each field: { key, label, type, required, placeholder, options, col }
- */
 function getFieldsForProduct(tag) {
-  // common first fields
+  
   const common = [
     {
       key: "name",
@@ -304,7 +299,6 @@ export default function InsuranceForm({ product, onBack, theme, agent }) {
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const getWhatsAppLink = () => {
-    // build message lines
     const lines = [
       `Insurance Inquiry`,
       `Product: ${product.name}`,
@@ -321,7 +315,7 @@ export default function InsuranceForm({ product, onBack, theme, agent }) {
   };
 
   const validate = () => {
-    // basic required check + phone + pincode len
+    
     for (const fld of fieldDefs) {
       if (fld.required) {
         const v = form[fld.key];
@@ -352,7 +346,7 @@ export default function InsuranceForm({ product, onBack, theme, agent }) {
       return;
     }
     setSubmitting(true);
-    // mimic small delay & show success tick and open whatsapp
+    
     setTimeout(() => {
       setSubmitting(false);
       setSent(true);
@@ -499,6 +493,9 @@ export default function InsuranceForm({ product, onBack, theme, agent }) {
             type="submit"
             className="btn btn-primary"
             style={{
+              backgroundColor: "#25D366",
+              theme: "solid",
+              color: "white",
               width: "100%",
               padding: "0.85rem 1rem",
               borderRadius: 12,

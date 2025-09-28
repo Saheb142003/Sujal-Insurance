@@ -1,4 +1,5 @@
-/* eslint-disable no-unused-vars */
+
+
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -23,7 +24,8 @@ export default function LoadingSpinner() {
         zIndex: 9999,
       }}
     >
-      {/* Main spinner */}
+  
+  
       <motion.div
         animate={{
           rotate: [0, 360],
@@ -43,7 +45,7 @@ export default function LoadingSpinner() {
         }}
       />
 
-      {/* Pulsing dots */}
+
       <div style={{ display: "flex", gap: "8px", marginBottom: "2rem" }}>
         {[0, 1, 2].map((index) => (
           <motion.div
@@ -67,7 +69,7 @@ export default function LoadingSpinner() {
         ))}
       </div>
 
-      {/* Loading text */}
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -84,7 +86,7 @@ export default function LoadingSpinner() {
           animate={{ opacity: [1, 0.5, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          Loading Insurance Hub
+          Loading Sujal Insurance
         </motion.span>
       </motion.div>
 
@@ -101,10 +103,10 @@ export default function LoadingSpinner() {
           textAlign: "center",
         }}
       >
-        Preparing your insurance solutions...
+        loading your insurance solutions...
       </motion.div>
 
-      {/* Background animated shapes */}
+
       <motion.div
         animate={{
           rotate: [0, 360],
