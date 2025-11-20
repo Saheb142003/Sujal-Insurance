@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SuccessTick from "./SuccessTick";
 
-const WHATSAPP_NUMBER = "919113111384";
+const WHATSAPP_NUMBER = "6200829766";
 
 function getFieldsForProduct(tag) {
   
