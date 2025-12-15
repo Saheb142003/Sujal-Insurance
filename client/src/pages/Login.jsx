@@ -40,7 +40,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(formData);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
     }

@@ -264,23 +264,43 @@ export default function Home() {
                       </Link>
                     </>
                   ) : (
-                    <motion.button
-                      onClick={logout}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      style={{
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "none",
-                        background: "rgba(255, 255, 255, 0.2)",
-                        color: "white",
-                        cursor: "pointer",
-                        fontWeight: "600",
-                        backdropFilter: "blur(5px)",
-                      }}
-                    >
-                      Logout
-                    </motion.button>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <Link to="/dashboard" style={{ textDecoration: "none" }}>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          style={{
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            border: "none",
+                            background: "rgba(255, 255, 255, 0.2)",
+                            color: "white",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            backdropFilter: "blur(5px)",
+                          }}
+                        >
+                          Dashboard
+                        </motion.button>
+                      </Link>
+                      <motion.button
+                        onClick={logout}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        style={{
+                          padding: "8px 16px",
+                          borderRadius: "8px",
+                          border: "none",
+                          background: "rgba(255, 255, 255, 0.2)",
+                          color: "white",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          backdropFilter: "blur(5px)",
+                        }}
+                      >
+                        Logout
+                      </motion.button>
+                    </div>
                   )}
                 </>
               )}

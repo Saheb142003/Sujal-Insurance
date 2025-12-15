@@ -6,13 +6,11 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(express.json());
 app.use(cors());
-
-// Routes
-app.use("/api/auth", require("./routes/auth"));
+app.use(express.json());
 
 // Connect to MongoDB
 mongoose
@@ -20,6 +18,8 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-const PORT = process.env.PORT || 5000;
+// Routes
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/policies", require("./routes/policies"));
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
