@@ -44,11 +44,11 @@ router.get("/seed", async (req, res) => {
     await User.deleteMany({}); // Clear existing users
     const user = new User({
       username: "admin",
-      email: "admin@example.com",
-      password: "admin",
+      email: process.env.ADMIN_EMAIL || "admin@example.com",
+      password: process.env.ADMIN_PASSWORD || "admin",
     });
     await user.save();
-    res.send("Admin seeded: admin@example.com / admin");
+    res.send("Admin seeded successfully");
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");

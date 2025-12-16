@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,11 +32,6 @@ const Policies = () => {
     startDate: "",
     endDate: "",
     amount: "",
-  });
-
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
-    headers: { "x-auth-token": token },
   });
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 const AuthContext = createContext();
 
@@ -9,18 +9,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
   useEffect(() => {
     if (token) {
       api.defaults.headers.common["x-auth-token"] = token;
-      // Optionally fetch user details here if you had a /me endpoint
-      // For now, we'll just assume the token is valid and user is logged in
       setLoading(false);
     } else {
       delete api.defaults.headers.common["x-auth-token"];

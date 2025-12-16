@@ -37,35 +37,6 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [policies, setPolicies] = useState({ starting: [], expiring: [] });
   const [allPolicies, setAllPolicies] = useState([]); // For calendar indicators
-  const [showForm, setShowForm] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-  const [formData, setFormData] = useState({
-    clientName: "",
-    vehicleNo: "",
-    phone: "",
-    amount: "",
-    endDate: "",
-  });
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
-    headers: {
-      "Content-Type": "application/json",
-      "x-auth-token": token,
-    },
-  });
-
-  useEffect(() => {
-    if (!loading && !token) {
-      navigate("/login");
-    }
-  }, [token, loading, navigate]);
 
   useEffect(() => {
     if (token) {
