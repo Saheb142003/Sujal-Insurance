@@ -46,7 +46,15 @@ const Dashboard = () => {
     amount: "",
     discount: "",
     endDate: "",
+    startDate: format(new Date(), "yyyy-MM-dd"),
   });
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      startDate: format(selectedDate, "yyyy-MM-dd"),
+    }));
+  }, [selectedDate]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -91,7 +99,7 @@ const Dashboard = () => {
 
       await api.post("/policies", {
         ...formData,
-        startDate: selectedDate,
+        startDate: new Date(formData.startDate),
         endDate: new Date(formData.endDate),
         amount: Number(formData.amount),
         discount: Number(formData.discount || 0),
@@ -104,6 +112,7 @@ const Dashboard = () => {
         amount: "",
         discount: "",
         endDate: "",
+        startDate: format(selectedDate, "yyyy-MM-dd"),
       });
       fetchPoliciesForDate(selectedDate);
       fetchAllPolicies();
@@ -708,6 +717,32 @@ const Dashboard = () => {
                       value={formData.endDate}
                       onChange={(e) =>
                         setFormData({ ...formData, endDate: e.target.value })
+                      }
+                      required
+                      style={{
+                        padding: "12px",
+                        borderRadius: "8px",
+                        border: `1px solid ${THEME.border}`,
+                        width: "100%",
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      style={{
+                        display: "block",
+                        marginBottom: "0.5rem",
+                        fontSize: "0.9rem",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) =>
+                        setFormData({ ...formData, startDate: e.target.value })
                       }
                       required
                       style={{
