@@ -100,11 +100,12 @@ router.delete("/:id", auth, async (req, res) => {
 // @access  Private
 router.get("/date/:date", auth, async (req, res) => {
   try {
-    const queryDate = new Date(req.params.date);
+    // Parse the date string directly to avoid timezone shifts
+    const startOfDay = new Date(req.params.date);
+    startOfDay.setUTCHours(0, 0, 0, 0);
 
-    // Create start and end of the day for the query
-    const startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
+    const endOfDay = new Date(req.params.date);
+    endOfDay.setUTCHours(23, 59, 59, 999);
 
     const starting = await Policy.find({
       startDate: { $gte: startOfDay, $lte: endOfDay },
