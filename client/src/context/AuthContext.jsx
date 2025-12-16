@@ -24,7 +24,9 @@ export const AuthProvider = ({ children }) => {
       const res = await api.post("/auth/login", formData);
       localStorage.setItem("token", res.data.token);
       setToken(res.data.token);
+      api.defaults.headers.common["x-auth-token"] = res.data.token; // Set header immediately
       setError(null);
+      return true; // Indicate success
     } catch (err) {
       setError(err.response?.data?.msg || "Login failed");
       throw err;

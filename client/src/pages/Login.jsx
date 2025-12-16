@@ -40,6 +40,9 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(formData);
+      // Navigation is now handled by the useEffect in Dashboard or we can force it here
+      // But since we set the token, the App's loading state might trigger.
+      // Let's just navigate.
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
