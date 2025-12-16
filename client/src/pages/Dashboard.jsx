@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
-import axios from "axios";
+import api from "../api/axios";
 import {
   format,
   startOfMonth,
@@ -37,6 +37,21 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [policies, setPolicies] = useState({ starting: [], expiring: [] });
   const [allPolicies, setAllPolicies] = useState([]); // For calendar indicators
+  const [showForm, setShowForm] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [formData, setFormData] = useState({
+    clientName: "",
+    vehicleNo: "",
+    phone: "",
+    amount: "",
+    endDate: "",
+  });
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (token) {

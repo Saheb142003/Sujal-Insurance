@@ -212,29 +212,52 @@ export default function Home() {
                             </Link>
                           </>
                         ) : (
-                          <motion.button
-                            onClick={() => {
-                              logout();
-                              setMobileMenuOpen(false);
-                            }}
-                            whileHover={{
-                              background: "#FEF2F2",
-                              color: "#EF4444",
-                            }}
-                            style={{
-                              width: "100%",
-                              padding: "8px 16px",
-                              borderRadius: "8px",
-                              border: "none",
-                              background: "transparent",
-                              color: THEME.text,
-                              cursor: "pointer",
-                              fontWeight: "600",
-                              textAlign: "left",
-                            }}
-                          >
-                            Logout
-                          </motion.button>
+                          <>
+                            <Link
+                              to="/dashboard"
+                              style={{ textDecoration: "none" }}
+                            >
+                              <motion.button
+                                whileHover={{ background: "#F1F5F9" }}
+                                style={{
+                                  width: "100%",
+                                  padding: "8px 16px",
+                                  borderRadius: "8px",
+                                  border: "none",
+                                  background: "transparent",
+                                  color: THEME.text,
+                                  cursor: "pointer",
+                                  fontWeight: "600",
+                                  textAlign: "left",
+                                }}
+                              >
+                                Dashboard
+                              </motion.button>
+                            </Link>
+                            <motion.button
+                              onClick={() => {
+                                logout();
+                                setMobileMenuOpen(false);
+                              }}
+                              whileHover={{
+                                background: "#FEF2F2",
+                                color: "#EF4444",
+                              }}
+                              style={{
+                                width: "100%",
+                                padding: "8px 16px",
+                                borderRadius: "8px",
+                                border: "none",
+                                background: "transparent",
+                                color: THEME.text,
+                                cursor: "pointer",
+                                fontWeight: "600",
+                                textAlign: "left",
+                              }}
+                            >
+                              Logout
+                            </motion.button>
+                          </>
                         )}
                       </motion.div>
                     )}
