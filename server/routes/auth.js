@@ -8,12 +8,15 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    console.log(`Login attempt for email: ${email}`);
     let user = await User.findOne({ email });
     if (!user) {
+      console.log("User not found in database.");
       return res.status(400).json({ msg: "Invalid Credentials" });
     }
 
     if (password !== user.password) {
+      console.log("Password mismatch.");
       return res.status(400).json({ msg: "Invalid Credentials" });
     }
 

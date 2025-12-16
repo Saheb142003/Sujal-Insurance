@@ -7,7 +7,8 @@ const auth = require("../middleware/auth");
 // @desc    Create a policy
 // @access  Private
 router.post("/", auth, async (req, res) => {
-  const { clientName, vehicleNo, phone, startDate, endDate, amount } = req.body;
+  const { clientName, vehicleNo, phone, startDate, endDate, amount, discount } =
+    req.body;
 
   try {
     const newPolicy = new Policy({
@@ -17,6 +18,7 @@ router.post("/", auth, async (req, res) => {
       startDate,
       endDate,
       amount,
+      discount: discount || 0,
     });
 
     const policy = await newPolicy.save();
@@ -44,7 +46,8 @@ router.get("/", auth, async (req, res) => {
 // @desc    Update a policy
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-  const { clientName, vehicleNo, phone, startDate, endDate, amount } = req.body;
+  const { clientName, vehicleNo, phone, startDate, endDate, amount, discount } =
+    req.body;
 
   // Build policy object
   const policyFields = {};
@@ -54,6 +57,7 @@ router.put("/:id", auth, async (req, res) => {
   if (startDate) policyFields.startDate = startDate;
   if (endDate) policyFields.endDate = endDate;
   if (amount) policyFields.amount = amount;
+  if (discount !== undefined) policyFields.discount = discount;
 
   try {
     let policy = await Policy.findById(req.params.id);
