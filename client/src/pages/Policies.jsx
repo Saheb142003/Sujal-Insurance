@@ -32,6 +32,7 @@ const Policies = () => {
     startDate: "",
     endDate: "",
     amount: "",
+    discount: "",
   });
 
   useEffect(() => {
@@ -55,7 +56,11 @@ const Policies = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/policies", formData);
+      await api.post("/policies", {
+        ...formData,
+        amount: Number(formData.amount),
+        discount: Number(formData.discount || 0),
+      });
       fetchPolicies();
       setShowForm(false);
       setFormData({
@@ -65,6 +70,7 @@ const Policies = () => {
         startDate: "",
         endDate: "",
         amount: "",
+        discount: "",
       });
     } catch (err) {
       console.error(err);
@@ -178,13 +184,26 @@ const Policies = () => {
                   value={formData.phone}
                   onChange={onChange}
                 />
-                <Input
-                  label="Amount"
-                  name="amount"
-                  type="number"
-                  value={formData.amount}
-                  onChange={onChange}
-                />
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <div style={{ flex: 1 }}>
+                    <Input
+                      label="Amount"
+                      name="amount"
+                      type="number"
+                      value={formData.amount}
+                      onChange={onChange}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <Input
+                      label="Discount"
+                      name="discount"
+                      type="number"
+                      value={formData.discount}
+                      onChange={onChange}
+                    />
+                  </div>
+                </div>
                 <Input
                   label="Start Date"
                   name="startDate"
@@ -226,9 +245,16 @@ const Policies = () => {
             borderRadius: "16px",
             boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
             overflow: "hidden",
+            overflowX: "auto", // Enable horizontal scroll for table
           }}
         >
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              minWidth: "600px",
+            }}
+          >
             <thead>
               <tr
                 style={{
@@ -240,7 +266,7 @@ const Policies = () => {
                 <Th>Client</Th>
                 <Th>Vehicle</Th>
                 <Th>Dates</Th>
-                <Th>Amount</Th>
+                <Th>Financials</Th>
                 <Th>Actions</Th>
               </tr>
             </thead>
@@ -268,7 +294,16 @@ const Policies = () => {
                       {new Date(policy.endDate).toLocaleDateString()}
                     </div>
                   </Td>
-                  <Td>₹{policy.amount}</Td>
+                  <Td>
+                    <div style={{ fontWeight: 600 }}>₹{policy.amount}</div>
+                    {policy.discount > 0 && (
+                      <div
+                        style={{ fontSize: "0.85rem", color: THEME.success }}
+                      >
+                        Disc: ₹{policy.discount}
+                      </div>
+                    )}
+                  </Td>
                   <Td>
                     <button
                       onClick={() => handleDelete(policy._id)}
@@ -305,7 +340,7 @@ const Policies = () => {
 };
 
 const Input = ({ label, ...props }) => (
-  <div>
+  <div style={{ width: "100%" }}>
     <label
       style={{
         display: "block",
@@ -326,6 +361,7 @@ const Input = ({ label, ...props }) => (
         border: `1px solid ${THEME.border}`,
         outline: "none",
         fontSize: "1rem",
+        boxSizing: "border-box", // Ensure padding doesn't affect width
       }}
     />
   </div>

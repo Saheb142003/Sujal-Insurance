@@ -44,6 +44,7 @@ const Dashboard = () => {
     vehicleNo: "",
     phone: "",
     amount: "",
+    discount: "",
     endDate: "",
   });
 
@@ -92,7 +93,8 @@ const Dashboard = () => {
         ...formData,
         startDate: selectedDate,
         endDate: new Date(formData.endDate),
-        amount: Number(formData.amount), // Ensure amount is a number
+        amount: Number(formData.amount),
+        discount: Number(formData.discount || 0),
       });
       setShowForm(false);
       setFormData({
@@ -100,6 +102,7 @@ const Dashboard = () => {
         vehicleNo: "",
         phone: "",
         amount: "",
+        discount: "",
         endDate: "",
       });
       fetchPoliciesForDate(selectedDate);
@@ -476,12 +479,18 @@ const Dashboard = () => {
                     <div
                       style={{ fontSize: "0.9rem", color: THEME.textSecondary }}
                     >
-                      {policy.vehicleNo}
+                      Vehicle: {policy.vehicleNo}
                     </div>
                     <div
                       style={{ fontSize: "0.9rem", color: THEME.textSecondary }}
                     >
-                      Amount: ₹{policy.amount}
+                      Phone: {policy.phone}
+                    </div>
+                    <div
+                      style={{ fontSize: "0.9rem", color: THEME.textSecondary }}
+                    >
+                      Amount: ₹{policy.amount}{" "}
+                      {policy.discount > 0 && `(Disc: ₹${policy.discount})`}
                     </div>
                   </div>
                 ))}
@@ -531,13 +540,25 @@ const Dashboard = () => {
                     <div
                       style={{ fontSize: "0.9rem", color: THEME.textSecondary }}
                     >
-                      {policy.vehicleNo}
+                      Vehicle: {policy.vehicleNo}
+                    </div>
+                    <div
+                      style={{ fontSize: "0.9rem", color: THEME.textSecondary }}
+                    >
+                      Phone: {policy.phone}
+                    </div>
+                    <div
+                      style={{ fontSize: "0.9rem", color: THEME.textSecondary }}
+                    >
+                      Amount: ₹{policy.amount}{" "}
+                      {policy.discount > 0 && `(Disc: ₹${policy.discount})`}
                     </div>
                     <div
                       style={{
                         fontSize: "0.9rem",
                         color: THEME.danger,
                         fontWeight: 600,
+                        marginTop: "0.5rem",
                       }}
                     >
                       EXPIRES TODAY
@@ -638,21 +659,39 @@ const Dashboard = () => {
                       width: "100%",
                     }}
                   />
-                  <input
-                    type="number"
-                    placeholder="Amount"
-                    value={formData.amount}
-                    onChange={(e) =>
-                      setFormData({ ...formData, amount: e.target.value })
-                    }
-                    required
-                    style={{
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: `1px solid ${THEME.border}`,
-                      width: "100%",
-                    }}
-                  />
+                  <div style={{ display: "flex", gap: "1rem" }}>
+                    <input
+                      type="number"
+                      placeholder="Amount"
+                      value={formData.amount}
+                      onChange={(e) =>
+                        setFormData({ ...formData, amount: e.target.value })
+                      }
+                      required
+                      style={{
+                        padding: "12px",
+                        borderRadius: "8px",
+                        border: `1px solid ${THEME.border}`,
+                        width: "100%",
+                        flex: 1,
+                      }}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Discount"
+                      value={formData.discount}
+                      onChange={(e) =>
+                        setFormData({ ...formData, discount: e.target.value })
+                      }
+                      style={{
+                        padding: "12px",
+                        borderRadius: "8px",
+                        border: `1px solid ${THEME.border}`,
+                        width: "100%",
+                        flex: 1,
+                      }}
+                    />
+                  </div>
                   <div>
                     <label
                       style={{
