@@ -33,8 +33,11 @@ router.post("/login", async (req, res) => {
       }
     );
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    console.error("Login Error:", err.message);
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is missing in environment variables!");
+    }
+    res.status(500).send("Server error: " + err.message);
   }
 });
 
