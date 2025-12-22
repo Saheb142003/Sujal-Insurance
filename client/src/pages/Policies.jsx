@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
+import AddPolicyModal from "../components/AddPolicyModal";
 import api from "../api/axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -22,24 +23,13 @@ const THEME = {
 
 const Policies = () => {
   const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    clientName: "",
-    vehicleNo: "",
-    phone: "",
-    startDate: (() => {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-${String(d.getDate()).padStart(2, "0")}`;
-    })(),
-    endDate: "",
-    amount: "",
-    discount: "",
-  });
+
+  const [editingPolicy, setEditingPolicy] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchPolicies();
@@ -56,33 +46,6 @@ const Policies = () => {
     }
   };
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await api.post("/policies", {
-        ...formData,
-        amount: Number(formData.amount),
-        discount: Number(formData.discount || 0),
-      });
-      fetchPolicies();
-      setShowForm(false);
-      setFormData({
-        clientName: "",
-        vehicleNo: "",
-        phone: "",
-        startDate: "",
-        endDate: "",
-        amount: "",
-        discount: "",
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
@@ -93,6 +56,10 @@ const Policies = () => {
       }
     }
   };
+
+  const filteredPolicies = policies.filter((policy) =>
+    policy.vehicleNo.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div
@@ -113,17 +80,21 @@ const Policies = () => {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link
-              to="/dashboard"
+            <button
+              onClick={() => navigate(-1)}
               style={{
                 textDecoration: "none",
                 color: THEME.textSecondary,
                 fontSize: "1.5rem",
                 fontWeight: 700,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
               }}
             >
               ←
-            </Link>
+            </button>
             <h1
               style={{ fontSize: "2rem", fontWeight: 800, color: THEME.text }}
             >
@@ -133,7 +104,7 @@ const Policies = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setShowForm(!showForm)}
+            onClick={() => setShowForm(true)}
             style={{
               background: THEME.primary,
               color: "white",
@@ -145,105 +116,39 @@ const Policies = () => {
               boxShadow: "0 4px 6px -1px rgba(30, 64, 175, 0.2)",
             }}
           >
-            {showForm ? "Close Form" : "+ Add Policy"}
+            + Add Policy
           </motion.button>
         </div>
 
-        <AnimatePresence>
-          {showForm && (
-            <motion.form
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              onSubmit={onSubmit}
-              style={{
-                background: THEME.card,
-                padding: "2rem",
-                borderRadius: "16px",
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
-                marginBottom: "2rem",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                  gap: "1.5rem",
-                }}
-              >
-                <Input
-                  label="Client Name"
-                  name="clientName"
-                  value={formData.clientName}
-                  onChange={onChange}
-                />
-                <Input
-                  label="Vehicle No"
-                  name="vehicleNo"
-                  value={formData.vehicleNo}
-                  onChange={onChange}
-                />
-                <Input
-                  label="Phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={onChange}
-                />
-                <div style={{ display: "flex", gap: "1rem" }}>
-                  <div style={{ flex: 1 }}>
-                    <Input
-                      label="Amount"
-                      name="amount"
-                      type="number"
-                      value={formData.amount}
-                      onChange={onChange}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <Input
-                      label="Discount"
-                      name="discount"
-                      type="number"
-                      value={formData.discount}
-                      onChange={onChange}
-                    />
-                  </div>
-                </div>
-                <Input
-                  label="Start Date"
-                  name="startDate"
-                  type="date"
-                  value={formData.startDate}
-                  onChange={onChange}
-                />
-                <Input
-                  label="End Date"
-                  name="endDate"
-                  type="date"
-                  value={formData.endDate}
-                  onChange={onChange}
-                />
-              </div>
-              <div style={{ marginTop: "2rem", textAlign: "right" }}>
-                <button
-                  type="submit"
-                  style={{
-                    background: THEME.success,
-                    color: "white",
-                    border: "none",
-                    padding: "0.8rem 2rem",
-                    borderRadius: "8px",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Save Policy
-                </button>
-              </div>
-            </motion.form>
-          )}
-        </AnimatePresence>
+        {/* Search Input */}
+        <div style={{ marginBottom: "1.5rem" }}>
+          <input
+            type="text"
+            placeholder="Search by Vehicle No..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: "100%",
+              maxWidth: "400px",
+              padding: "12px",
+              borderRadius: "12px",
+              border: `1px solid ${THEME.border}`,
+              fontSize: "1rem",
+              outline: "none",
+            }}
+          />
+        </div>
+
+        <AddPolicyModal
+          isOpen={showForm}
+          onClose={() => {
+            setShowForm(false);
+            setEditingPolicy(null);
+          }}
+          onSuccess={fetchPolicies}
+          initialDate={new Date()}
+          policy={editingPolicy}
+        />
 
         <div
           style={{
@@ -277,7 +182,7 @@ const Policies = () => {
               </tr>
             </thead>
             <tbody>
-              {policies.map((policy) => (
+              {filteredPolicies.map((policy) => (
                 <tr
                   key={policy._id}
                   style={{ borderBottom: `1px solid ${THEME.border}` }}
@@ -293,7 +198,18 @@ const Policies = () => {
                       {policy.phone}
                     </div>
                   </Td>
-                  <Td>{policy.vehicleNo}</Td>
+                  <Td>
+                    <div style={{ fontWeight: 600 }}>{policy.vehicleNo}</div>
+                    <div
+                      style={{
+                        fontSize: "0.85rem",
+                        color: THEME.textSecondary,
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {policy.vehicleType}
+                    </div>
+                  </Td>
                   <Td>
                     <div style={{ fontSize: "0.9rem" }}>
                       {new Date(policy.startDate).toLocaleDateString()} -{" "}
@@ -309,8 +225,34 @@ const Policies = () => {
                         Disc: ₹{policy.discount}
                       </div>
                     )}
+                    <div
+                      style={{
+                        fontSize: "0.8rem",
+                        color: THEME.primary,
+                        marginTop: "0.2rem",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {policy.policyType}
+                    </div>
                   </Td>
                   <Td>
+                    <button
+                      onClick={() => {
+                        setEditingPolicy(policy);
+                        setShowForm(true);
+                      }}
+                      style={{
+                        color: THEME.primary,
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontWeight: 600,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      Edit
+                    </button>
                     <button
                       onClick={() => handleDelete(policy._id)}
                       style={{
@@ -328,7 +270,7 @@ const Policies = () => {
               ))}
             </tbody>
           </table>
-          {policies.length === 0 && !loading && (
+          {filteredPolicies.length === 0 && !loading && (
             <div
               style={{
                 padding: "2rem",
@@ -344,34 +286,6 @@ const Policies = () => {
     </div>
   );
 };
-
-const Input = ({ label, ...props }) => (
-  <div style={{ width: "100%" }}>
-    <label
-      style={{
-        display: "block",
-        marginBottom: "0.5rem",
-        fontSize: "0.9rem",
-        fontWeight: 600,
-        color: THEME.text,
-      }}
-    >
-      {label}
-    </label>
-    <input
-      {...props}
-      style={{
-        width: "100%",
-        padding: "0.8rem",
-        borderRadius: "8px",
-        border: `1px solid ${THEME.border}`,
-        outline: "none",
-        fontSize: "1rem",
-        boxSizing: "border-box", // Ensure padding doesn't affect width
-      }}
-    />
-  </div>
-);
 
 const Th = ({ children }) => (
   <th style={{ padding: "1rem", fontWeight: 600, fontSize: "0.9rem" }}>

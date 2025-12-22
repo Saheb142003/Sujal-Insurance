@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import AddPolicyModal from "../components/AddPolicyModal";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import api from "../api/axios";
@@ -38,23 +39,14 @@ const Dashboard = () => {
   const [policies, setPolicies] = useState({ starting: [], expiring: [] });
   const [allPolicies, setAllPolicies] = useState([]); // For calendar indicators
   const [showForm, setShowForm] = useState(false);
+  const [editingPolicy, setEditingPolicy] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-  const [formData, setFormData] = useState({
-    clientName: "",
-    vehicleNo: "",
-    phone: "",
-    amount: "",
-    discount: "",
-    endDate: "",
-    startDate: format(new Date(), "yyyy-MM-dd"),
-  });
 
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      startDate: format(selectedDate, "yyyy-MM-dd"),
-    }));
-  }, [selectedDate]);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -85,40 +77,6 @@ const Dashboard = () => {
       setAllPolicies(res.data);
     } catch (err) {
       console.error("Error fetching all policies:", err);
-    }
-  };
-
-  const handleAddPolicy = async (e) => {
-    e.preventDefault();
-    try {
-      // Ensure endDate is valid
-      if (!formData.endDate) {
-        alert("Please select an end date");
-        return;
-      }
-
-      await api.post("/policies", {
-        ...formData,
-        startDate: new Date(formData.startDate),
-        endDate: new Date(formData.endDate),
-        amount: Number(formData.amount),
-        discount: Number(formData.discount || 0),
-      });
-      setShowForm(false);
-      setFormData({
-        clientName: "",
-        vehicleNo: "",
-        phone: "",
-        amount: "",
-        discount: "",
-        endDate: "",
-        startDate: format(selectedDate, "yyyy-MM-dd"),
-      });
-      fetchPoliciesForDate(selectedDate);
-      fetchAllPolicies();
-    } catch (err) {
-      console.error("Error adding policy:", err);
-      alert("Failed to add policy. Please check the console for details.");
     }
   };
 
@@ -480,8 +438,28 @@ const Dashboard = () => {
                       borderRadius: "12px",
                       background: "#F0F9FF",
                       border: "1px solid #BAE6FD",
+                      position: "relative",
                     }}
                   >
+                    <button
+                      onClick={() => {
+                        setEditingPolicy(policy);
+                        setShowForm(true);
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: "1rem",
+                        right: "1rem",
+                        background: "none",
+                        border: "none",
+                        color: THEME.primary,
+                        cursor: "pointer",
+                        fontWeight: 600,
+                        fontSize: "0.85rem",
+                      }}
+                    >
+                      Edit
+                    </button>
                     <div style={{ fontWeight: 700, color: THEME.text }}>
                       {policy.clientName}
                     </div>
@@ -541,8 +519,28 @@ const Dashboard = () => {
                       borderRadius: "12px",
                       background: "#FEF2F2",
                       border: "1px solid #FECACA",
+                      position: "relative",
                     }}
                   >
+                    <button
+                      onClick={() => {
+                        setEditingPolicy(policy);
+                        setShowForm(true);
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: "1rem",
+                        right: "1rem",
+                        background: "none",
+                        border: "none",
+                        color: THEME.primary,
+                        cursor: "pointer",
+                        fontWeight: 600,
+                        fontSize: "0.85rem",
+                      }}
+                    >
+                      Edit
+                    </button>
                     <div style={{ fontWeight: 700, color: THEME.text }}>
                       {policy.clientName}
                     </div>
@@ -581,218 +579,19 @@ const Dashboard = () => {
       </main>
 
       {/* Add Policy Modal */}
-      <AnimatePresence>
-        {showForm && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "rgba(0,0,0,0.5)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 100,
-              padding: "1rem",
-            }}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              style={{
-                background: "white",
-                padding: "2rem",
-                borderRadius: "24px",
-                width: "100%",
-                maxWidth: "500px",
-                maxHeight: "90vh",
-                overflowY: "auto",
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 700,
-                  marginBottom: "1.5rem",
-                }}
-              >
-                Add New Policy
-              </h3>
-              <form onSubmit={handleAddPolicy}>
-                <div style={{ display: "grid", gap: "1rem" }}>
-                  <input
-                    type="text"
-                    placeholder="Client Name"
-                    value={formData.clientName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, clientName: e.target.value })
-                    }
-                    required
-                    style={{
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: `1px solid ${THEME.border}`,
-                      width: "100%",
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Vehicle No"
-                    value={formData.vehicleNo}
-                    onChange={(e) =>
-                      setFormData({ ...formData, vehicleNo: e.target.value })
-                    }
-                    required
-                    style={{
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: `1px solid ${THEME.border}`,
-                      width: "100%",
-                    }}
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    required
-                    style={{
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: `1px solid ${THEME.border}`,
-                      width: "100%",
-                    }}
-                  />
-                  <div style={{ display: "flex", gap: "1rem" }}>
-                    <input
-                      type="number"
-                      placeholder="Amount"
-                      value={formData.amount}
-                      onChange={(e) =>
-                        setFormData({ ...formData, amount: e.target.value })
-                      }
-                      required
-                      style={{
-                        padding: "12px",
-                        borderRadius: "8px",
-                        border: `1px solid ${THEME.border}`,
-                        width: "100%",
-                        flex: 1,
-                      }}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Discount"
-                      value={formData.discount}
-                      onChange={(e) =>
-                        setFormData({ ...formData, discount: e.target.value })
-                      }
-                      style={{
-                        padding: "12px",
-                        borderRadius: "8px",
-                        border: `1px solid ${THEME.border}`,
-                        width: "100%",
-                        flex: 1,
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        marginBottom: "0.5rem",
-                        fontSize: "0.9rem",
-                        fontWeight: 600,
-                      }}
-                    >
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.endDate}
-                      onChange={(e) =>
-                        setFormData({ ...formData, endDate: e.target.value })
-                      }
-                      required
-                      style={{
-                        padding: "12px",
-                        borderRadius: "8px",
-                        border: `1px solid ${THEME.border}`,
-                        width: "100%",
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        marginBottom: "0.5rem",
-                        fontSize: "0.9rem",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.startDate}
-                      onChange={(e) =>
-                        setFormData({ ...formData, startDate: e.target.value })
-                      }
-                      required
-                      style={{
-                        padding: "12px",
-                        borderRadius: "8px",
-                        border: `1px solid ${THEME.border}`,
-                        width: "100%",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  style={{ display: "flex", gap: "1rem", marginTop: "2rem" }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    style={{
-                      flex: 1,
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: "none",
-                      background: THEME.bg,
-                      cursor: "pointer",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    style={{
-                      flex: 1,
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: "none",
-                      background: THEME.primary,
-                      color: "white",
-                      cursor: "pointer",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Add Policy
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <AddPolicyModal
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditingPolicy(null);
+        }}
+        onSuccess={() => {
+          fetchPoliciesForDate(selectedDate);
+          fetchAllPolicies();
+        }}
+        initialDate={selectedDate}
+        policy={editingPolicy}
+      />
     </div>
   );
 };

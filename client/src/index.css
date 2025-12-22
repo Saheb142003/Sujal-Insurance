@@ -179,7 +179,7 @@ button {
 }
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 .stats-item {
@@ -208,25 +208,28 @@ button {
 }
 
 /* mobile: horizontal snap carousel for stats */
-@media (max-width: 720px) {
+/* Mobile: Enforce 2 columns */
+@media (max-width: 768px) {
   .stats-row {
-    display: flex;
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
-    overflow-x: auto;
-    padding: 0.4rem 0.6rem;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
   }
-  .stats-row .stats-item {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
+  .stats-item {
+    min-width: 0; /* Allow shrinking below content size if needed */
+    padding: 1rem 0.5rem; /* Slightly tighter padding on mobile */
   }
-  .stats-row::-webkit-scrollbar {
-    height: 8px;
+  .stats-item .value {
+    font-size: 1.4rem;
   }
-  .stats-row::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.12);
-    border-radius: 999px;
+  .stats-item .icon {
+    font-size: 1.8rem;
+  }
+}
+
+/* Very small screens: Stack if absolutely necessary, but user prefers horizontal */
+@media (max-width: 340px) {
+  .stats-row {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -9,6 +9,15 @@ const PolicySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  vehicleType: {
+    type: String,
+    required: true,
+  },
+  policyType: {
+    type: String,
+    required: true,
+    enum: ["1st Party", "3rd Party"],
+  },
   phone: {
     type: String,
     required: true,

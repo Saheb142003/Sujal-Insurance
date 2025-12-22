@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import api from "../api/axios";
 import InsuranceList from "../components/InsuranceList.jsx";
 import InsuranceForm from "../components/InsuranceForm.jsx";
 import FloatingElements from "../components/FloatingElements.jsx";
@@ -46,6 +47,19 @@ export default function Home() {
   const [headerOpen, setHeaderOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await api.get("/policies/stats");
+        setStats(res.data);
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
+    };
+    fetchStats();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -379,8 +393,10 @@ export default function Home() {
                 Year Experience
               </div>
               <div style={{ opacity: 0.85, fontSize: "0.9rem", marginTop: 6 }}>
-                {AGENT_PROFILE.policies}+ Policies Sold •{" "}
-                {AGENT_PROFILE.clients} Happy Clients
+                {stats ? stats.totalPolicies + 70 : AGENT_PROFILE.policies}+
+                Policies Sold •{" "}
+                {stats ? stats.totalClients + 80 : AGENT_PROFILE.clients} Happy
+                Clients
               </div>
             </div>
           </div>
@@ -390,13 +406,17 @@ export default function Home() {
       <main
         style={{ maxWidth: "1200px", margin: "0 auto", padding: "2.2rem 1rem" }}
       >
-        <StatsSection theme={THEME} />
+        <StatsSection theme={THEME} stats={stats} />
 
         <motion.section
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.7, duration: 0.8 }}
-          style={{ marginBottom: "2.5rem", textAlign: "center" }}
+          style={{
+            marginBottom: "2.5rem",
+            marginTop: "3rem",
+            textAlign: "center",
+          }}
         >
           <h2
             style={{
